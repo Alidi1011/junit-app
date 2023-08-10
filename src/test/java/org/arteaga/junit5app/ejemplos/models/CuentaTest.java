@@ -10,19 +10,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
 
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -407,17 +402,24 @@ class CuentaTest {
     }
 
     @Nested
-    @Tag("timout")
+    @Tag("timeout")
     class EjemploTimeoutTest{
         @Test
-        @Timeout(5)
+        @Timeout(1)
         void pruebaTimeout() throws  InterruptedException{
-            TimeUnit.SECONDS.sleep(6);
+            TimeUnit.MILLISECONDS.sleep(100);
         }
         @Test
-        @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
+        @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
         void pruebaTimeout2() throws  InterruptedException{
-            TimeUnit.SECONDS.sleep(6);
+            TimeUnit.MILLISECONDS.sleep(1000);
+        }
+
+        @Test
+        void testTimeoutAssertions(){
+            assertTimeout(Duration.ofSeconds(5), () -> {
+                TimeUnit.MILLISECONDS.sleep(4500);
+            });
         }
     }
 }
